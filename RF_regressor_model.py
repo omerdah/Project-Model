@@ -112,12 +112,85 @@ season_mapping = {
     11: 0,
     12: 0
 }
+watering = {
+   'קונוע' :1,
+   'טפטוף' :2,
+   'משולב' :3
+}
+sorgum = {
+   'ללא' :0,
+   'מזרח' :1,
+   'דרום' :2,
+   'מערב' :3,
+   'צפון' :4,
+   'לא ידוע' :5
+}
+mission = {
+   'שוק' :1,
+   'תעשייה' :2,
+   'תחמיץ' :3,
+   'פופקורן' :4
+}
+soil = {
+   'קלה' :1,
+   'בינונית' :2,
+   'בינונית-כבדה' :2.5
+   'כבדה' :3
+}
+formar_crop = {
+   'קטנית' :1,
+   'שושניים' :2,
+   'סוככים' :3,
+   'דגניים' :4,
+   'שחור' :5
+}
+spray = {
+   'קרקע' :1,
+   'אוויר' :2,
+   'משולב' :3
+}
+pre_process = {
+   'חריש' :1,
+   'דיסקוס' :2,
+   'קלטור' :3
+}
+
+fertile = {
+   'ללא' :0,
+   'קומפוסט' :1,
+   'זבל חצרות' :2,
+   'זבל עוף' :3,
+   'טריפל' :4,
+   'לא ידוע' :5
+}
+corn_type = {
+   'מספוא' :1,
+   'מתוק' :2,
+   'סופר-מתוק' :3,
+   'פופקורן' :4
+}
+confidor = {
+   'ללא' :0,
+   'קונפידור' :1,
+   'קונפידור + טלסטאר בזריעה' :2
+}
 # Function to preprocess the input data
 def preprocess_input(data):
     data['עונת גידול'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(season_mapping)
-    # data['עונת גידול'] = data['עונת גידול'].map(season_mapping)
     data['שלב הזריעה בעונה'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(month_mapping)
     data['מועד זריעה'] = pd.to_datetime(data['מועד זריעה']).dt.dayofyear
+    
+    data['השקיה'] = data['השקיה'].map(watering)
+    data['גידול תירס/סורגום שכן'] = data['גידול תירס/סורגום שכן'].map(sorgum)
+    data['ייעוד'] = data['ייעוד'].map(mission)
+    data['סוג הקרקע'] = data['סוג הקרקע'].map(soil)
+    data['כרב/גידול קודם'] = data['כרב/גידול קודם'].map(formar_crop)
+    data['אופן הדברה'] = data['אופן הדברה'].map(spray)
+    data['עיבוד מקדים'] = data['עיבוד מקדים'].map(pre_process)
+    data['סוג זבל'] = data['סוג זבל'].map(fertile)
+    data['טיפוס תירס'] = data['טיפוס תירס'].map(corn_type)
+    data['קונפידור, קונפידור + טלסטאר בזריעה'] = data['קונפידור, קונפידור + טלסטאר בזריעה'].map(confidor)
+    
     data = data.astype('float64')
     data = pd.get_dummies(data, columns=categorial_feats, prefix=categorial_feats, prefix_sep='_')
     # Realign new data columns with training data columns
