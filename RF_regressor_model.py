@@ -13,7 +13,9 @@ class RoundedRandomForestRegressor(RandomForestRegressor):
 
 # Load the saved model
 model = pickle.load(open('rounded_RF_Regressor_model.pkl', 'rb'))
+
 df_mappings = pd.read_excel('feature_mappings.xlsx',index_col=None)
+
 # Define the mapping dictionaries
 month_mapping = {
     1: 1,
@@ -32,10 +34,6 @@ month_mapping = {
 all_features = ['שלב הזריעה בעונה','עונת גידול','טיפוס תירס','סוג זבל','עיבוד מקדים','אופן הדברה','כרב/גידול קודם','סוג הקרקע','ייעוד','גידול תירס/סורגום שכן','השקיה','משך גידול ממוצע','קרינה ממוצע יום','עננות ממוצע יום','התאדות פנמן ממוצע יום','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','מהירות רוח ממוצע יום','טמפ 2 מ ממוצע יום','קרינה ממוצע לילה','התאדות פנמן ממוצע לילה','לחות יחסית ממוצע לילה','כיוון רוח ממוצע לילה','מהירות רוח ממוצע לילה','טמפ 2 מ ממוצע לילה','קונפידור, קונפידור + טלסטאר בזריעה','מנת גשם עונתי','גובה מפני הים',"מס' דונם",'מועד זריעה']
 
 season_mapping = {'סתיו': 0, 'אביב': 1, 'אביב-קיץ': 2}
-
-
-def reverse_string(input_str):
-    return input_str[::-1]
 
 # Function to preprocess the input data
 def preprocess_input(data):
@@ -59,7 +57,9 @@ def main():
     for feature_name in all_features:
         if feature_name in input_names:
             valid_values = list(df_mappings[feature_name].dropna().unique())
-            if isinstance(valid_values, list):
+            if feature_name == 'מועד זריעה':
+                input_value = st.date_input(feature_name)
+            elif isinstance(valid_values, list):
                 input_value = st.selectbox(feature_name, valid_values)
             else:
                 input_value = st.number_input(feature_name, value=0.0)
@@ -68,17 +68,22 @@ def main():
 
         inputs.append(input_value)
     
-    # Create a DataFrame from the user inputs
-    input_data = pd.DataFrame([inputs], columns=input_names)
+    # Create a button to trigger the prediction
+    if st.button('חיזוי'):
+        
+        input_data = pd.DataFrame([inputs], columns=all_features)
+        
+        # Preprocess the input data
+        preprocessed_data = preprocess_input(input_data)
 
-    # Preprocess the input data
-    preprocessed_data = preprocess_input(input_data)
+        # Make predictions
+        prediction = model.predict(preprocessed_data)
+    
+        # Create a DataFrame from the user inputs
+        input_data = pd.DataFrame([inputs], columns=input_names)
 
-    # Make predictions
-    prediction = model.predict(preprocessed_data)
-
-    # Display the prediction
-    st.write('חיזוי:', prediction)
+        # Display the prediction
+        st.write('חיזוי:', prediction)
 
 # Run the app
 if __name__ == '__main__':
