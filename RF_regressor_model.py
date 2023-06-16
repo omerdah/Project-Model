@@ -135,7 +135,7 @@ def main():
     # Get the feature names that need validation from df_mappings
     input_names = list(df_mappings.columns)
 
-    inputs = []
+    inputs = {}
     for feature_name in all_features:
         if feature_name == 'מועד זריעה':
             min_date = pd.to_datetime('today').date()
@@ -151,12 +151,12 @@ def main():
         else:
             input_value = st.number_input(feature_name, value=0.0)
 
-        inputs.append(input_value)
+        inputs[feature_name] = input_value
         
     # Create a button to trigger the prediction
     if st.button('חיזוי'):
         
-        input_data = pd.DataFrame([inputs], columns=all_features)
+        input_data = pd.DataFrame(inputs)
         
         # Preprocess the input data
         preprocessed_data = preprocess_input(input_data)
