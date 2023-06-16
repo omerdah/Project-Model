@@ -7,3 +7,4 @@ scipy
 statsmodels
 xgboost
 joblib
+scikit_learn
