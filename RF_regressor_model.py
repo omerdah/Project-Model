@@ -155,8 +155,12 @@ def main():
         
     # Create a button to trigger the prediction
     if st.button('חיזוי'):
-        
-        input_data = pd.DataFrame.from_dict(inputs)
+
+        # Convert dictionary to list of dictionaries
+        input_data = [{k: v[i] for k, v in data.items()} for i in range(1)]
+
+        # Create DataFrame from list of dictionaries
+        input_data = pd.DataFrame(input_data)
         
         # Preprocess the input data
         preprocessed_data = preprocess_input(input_data)
