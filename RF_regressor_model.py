@@ -156,7 +156,7 @@ def main():
     # Create a button to trigger the prediction
     if st.button('חיזוי'):
         
-        input_data = pd.DataFrame(inputs)
+        input_data = pd.DataFrame.from_dict(inputs)
         
         # Preprocess the input data
         preprocessed_data = preprocess_input(input_data)
