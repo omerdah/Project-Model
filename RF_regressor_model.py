@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import pickle
 import joblib
+import numpy as np
 
 # Define the RoundedRandomForestRegressor class
 class RoundedRandomForestRegressor(RandomForestRegressor):
@@ -31,25 +32,25 @@ month_mapping = {
     11: 3,
     12: 3
 }
-all_features = ['שלב הזריעה בעונה','עונת גידול','טיפוס תירס','סוג זבל','עיבוד מקדים','אופן הדברה','כרב/גידול קודם','סוג הקרקע','ייעוד','גידול תירס/סורגום שכן','השקיה','משך גידול ממוצע','קרינה ממוצע יום','עננות ממוצע יום','התאדות פנמן ממוצע יום','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','מהירות רוח ממוצע יום','טמפ 2 מ ממוצע יום','קרינה ממוצע לילה','התאדות פנמן ממוצע לילה','לחות יחסית ממוצע לילה','כיוון רוח ממוצע לילה','מהירות רוח ממוצע לילה','טמפ 2 מ ממוצע לילה','קונפידור, קונפידור + טלסטאר בזריעה','מנת גשם עונתי','גובה מפני הים',"מס' דונם",'מועד זריעה']
-
+all_features = ['עונת גידול','טיפוס תירס','סוג זבל','עיבוד מקדים','אופן הדברה','כרב/גידול קודם','סוג הקרקע','ייעוד','גידול תירס/סורגום שכן','השקיה','משך גידול ממוצע','קרינה ממוצע יום','עננות ממוצע יום','התאדות פנמן ממוצע יום','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','מהירות רוח ממוצע יום','טמפ 2 מ ממוצע יום','קרינה ממוצע לילה','התאדות פנמן ממוצע לילה','לחות יחסית ממוצע לילה','כיוון רוח ממוצע לילה','מהירות רוח ממוצע לילה','טמפ 2 מ ממוצע לילה','קונפידור, קונפידור + טלסטאר בזריעה','מנת גשם עונתי','גובה מפני הים',"מס' דונם",'מועד זריעה']
+categorial_feats = ['השקיה','גידול תירס/סורגום שכן','ייעוד','סוג הקרקע','כרב/גידול קודם','אופן הדברה','עיבוד מקדים','סוג זבל','טיפוס תירס','עונת גידול','שלב הזריעה בעונה']
 season_mapping = {'סתיו': 0, 'אביב': 1, 'אביב-קיץ': 2}
 
 # Function to preprocess the input data
 def preprocess_input(data):
     data['עונת גידול'] = data['עונת גידול'].map(season_mapping)
-    data['שלב הזריעה בעונה'] = data['מועד זריעה'].dt.month.map(month_mapping)
+    data['שלב הזריעה בעונה'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(month_mapping)
     data['מועד זריעה'] = pd.to_datetime(data['מועד זריעה']).dt.dayofyear
     data = data.astype('float64')
-    cat_cols = categorial_feats
-    data = pd.get_dummies(data, columns=cat_cols, prefix=cat_cols, prefix_sep='_')
+    categorial_feats
+    data = pd.get_dummies(data, columns=categorial_feats, prefix=categorial_feats, prefix_sep='_')
     return data
 
 # Create the Streamlit app
 def main():
     st.title('חיזוי מספר הריסוסים כנגד נגעים של גדודנית פולשת בתירס')
     st.write('הזן את כלל הקלטים המופיעים מטה ולחץ "תחזית"')
-    
+
     # Get the feature names that need validation from df_mappings
     input_names = list(df_mappings.columns)
 
@@ -58,8 +59,8 @@ def main():
         if feature_name in input_names:
             valid_values = list(df_mappings[feature_name].dropna().unique())
             if feature_name == 'מועד זריעה':
-                min_date = datetime.datetime.now().date()
-                max_date = pd.to_datetime('2030-12-31')
+                min_date = pd.to_datetime('today').date()
+                max_date = pd.to_datetime('2030-12-31').date()
                 input_value = st.date_input(feature_name, min_value=min_date, max_value=max_date)
             elif isinstance(valid_values, list):
                 input_value = st.selectbox(feature_name, valid_values)
@@ -69,7 +70,7 @@ def main():
             input_value = st.number_input(feature_name, value=0.0)
 
         inputs.append(input_value)
-    
+        
     # Create a button to trigger the prediction
     if st.button('חיזוי'):
         
