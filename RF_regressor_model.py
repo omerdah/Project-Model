@@ -56,13 +56,14 @@ def main():
 
     inputs = []
     for feature_name in all_features:
-        if feature_name in input_names:
+        if feature_name == 'מועד זריעה':
+            min_date = pd.to_datetime('today').date()
+            max_date = pd.to_datetime('2030-12-31').date()
+            input_value = st.date_input(feature_name, min_value=min_date, max_value=max_date)
+        elif feature_name in input_names:
             valid_values = list(df_mappings[feature_name].dropna().unique())
-            if feature_name == 'מועד זריעה':
-                min_date = pd.to_datetime('today').date()
-                max_date = pd.to_datetime('2030-12-31').date()
-                input_value = st.date_input(feature_name, min_value=min_date, max_value=max_date)
-            elif isinstance(valid_values, list):
+
+            if isinstance(valid_values, list):
                 input_value = st.selectbox(feature_name, valid_values)
             else:
                 input_value = st.number_input(feature_name, value=0.0)
