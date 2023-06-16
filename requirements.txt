@@ -1,0 +1,10 @@
+pandas
+numpy
+seaborn
+matplotlib
+matplotlib
+scipy
+statsmodels
+xgboost
+joblib
+pickle
