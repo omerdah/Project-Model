@@ -8,3 +8,4 @@ statsmodels
 xgboost
 joblib
 scikit_learn
+openpyxl
