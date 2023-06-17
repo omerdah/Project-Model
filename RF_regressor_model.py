@@ -171,8 +171,8 @@ corn_type = {
 }
 confidor = {
    'ללא' :0,
-   'קונפידור' :1,
-   'קונפידור + טלסטאר בזריעה' :2
+   'יישום בזריעה' :1,
+   'יישום בזריעה ו30 יום לפני אסיף' :2
 }
 # Function to preprocess the input data
 def preprocess_input(data):
