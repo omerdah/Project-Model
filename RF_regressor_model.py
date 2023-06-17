@@ -206,7 +206,7 @@ def preprocess_input(data):
 def main():
     # Set page layout to center alignment
     st.set_page_config(layout="centered")
-    st.title('חיזוי מספר הריסוסים כנגד נגעים של גדודנית פולשת בתירס')
+    st.title('חיזוי מספר הריסוסים כנגד גדודנית פולשת בתירס')
     st.write('הזן את כלל הקלטים המופיעים מטה ולחץ על כפתור התחזית')
 
     # Get the feature names that need validation from df_mappings
