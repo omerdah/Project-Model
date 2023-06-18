@@ -95,7 +95,7 @@ month_mapping = {
     11: 3,
     12: 3
 }
-meteo_feats = ['קרינה ממוצע יום','קרינה ממוצע לילה','עננות ממוצע יום','התאדות פנמן ממוצע יום','התאדות פנמן ממוצע לילה','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','כיוון רוח ממוצע לילה','מהירות רוח ממוצע יום','מהירות רוח ממוצע לילה','טמפ 2 ממוצע יום','טמפ 2 ממוצע לילה']
+meteo_feats = list(set(stats_per_season_and_area.columns) - set(['עונת גידול','אזור']))
 all_features = ['טיפוס תירס','סוג זבל','עיבוד מקדים','אופן הדברה','כרב/גידול קודם','סוג הקרקע','ייעוד','גידול תירס/סורגום שכן','השקיה','משך גידול ממוצע','קרינה ממוצע יום','עננות ממוצע יום','התאדות פנמן ממוצע יום','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','מהירות רוח ממוצע יום','טמפ 2 מ ממוצע יום','קרינה ממוצע לילה','התאדות פנמן ממוצע לילה','לחות יחסית ממוצע לילה','כיוון רוח ממוצע לילה','מהירות רוח ממוצע לילה','טמפ 2 מ ממוצע לילה','קונפידור, קונפידור + טלסטאר בזריעה','מנת גשם עונתי','גובה מפני הים',"מס' דונם",'מועד זריעה','אזור']
 categorial_feats = ['קונפידור, קונפידור + טלסטאר בזריעה','השקיה','גידול תירס/סורגום שכן','ייעוד','סוג הקרקע','כרב/גידול קודם','אופן הדברה','עיבוד מקדים','סוג זבל','טיפוס תירס','עונת גידול','שלב הזריעה בעונה']
 # season_mapping = {'סתיו': 0, 'אביב': 1, 'אביב-קיץ': 2}
@@ -191,17 +191,18 @@ def preprocess_input(data):
     data['סוג זבל'] = data['סוג זבל'].map(fertile)
     data['טיפוס תירס'] = data['טיפוס תירס'].map(corn_type)
     data['קונפידור, קונפידור + טלסטאר בזריעה'] = data['קונפידור, קונפידור + טלסטאר בזריעה'].map(confidor)
-    data.drop(columns = ['אזור'], inplace = True)
-    data = data.astype('float64')
-    data = pd.get_dummies(data, columns=categorial_feats, prefix=categorial_feats, prefix_sep='_')
+    
+    tmp = data.drop(columns = ['אזור'])
+    tmp = tmp.astype('float64')
+    tmp = pd.get_dummies(tmp, columns=categorial_feats, prefix=categorial_feats, prefix_sep='_')
     # Realign new data columns with training data columns
-    missing_cols = set(X) - set(data.columns)
+    missing_cols = set(X) - set(tmp.columns)
     for col in missing_cols:
-        data[col] = 0
+        tmp[col] = 0
 
     # Ensure the order of columns is the same as in the training data
-    data = data[X]
-    return data
+    tmp = tmp[X]
+    return tmp
 
 def procces_meteo(data):
     data['עונת גידול'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(season_mapping)
