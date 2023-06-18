@@ -203,7 +203,7 @@ def preprocess_input(data):
     data = data[X]
     return data
 
-def procces_meteo(data):    
+def procces_meteo(data):   
     # Extract the season and area values from the first DataFrame
     season = data['עונת גידול'].values[0]
     area = data['אזור'].values[0]
@@ -217,7 +217,8 @@ def procces_meteo(data):
     # Add the extra columns to the first DataFrame
     for col in extra_columns:
         data[col] = filtered_df2[col].values[0]
-
+    data.drop(columns = ['אזור'], inplace = True)
+    return data
         
 # Create the Streamlit app
 def main():
