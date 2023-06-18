@@ -228,13 +228,9 @@ def main():
 
     # Get the feature names that need validation from df_mappings
     input_names = list(df_mappings.columns)
-
+    with_no_meteo = list(set(all_features)-set(meteo_feats))
     inputs = []
-    for feature_name in all_features:
-        if feature_name in ['לחות יחסית ממוצע יום', 'טמפ 2 ממוצע יום', 'טמפ 2 ממוצע לילה']:
-            continue
-        elif feature_name in meteo_feats:
-            continue
+    for feature_name in with_no_meteo:
         elif feature_name == 'מועד זריעה':
             min_date = pd.to_datetime('today').date()
             max_date = pd.to_datetime('2030-12-31').date()
@@ -254,7 +250,7 @@ def main():
     # Create a button to trigger the prediction
     if st.button('חיזוי'):
         
-        input_data = pd.DataFrame([inputs], columns=all_features)
+        input_data = pd.DataFrame([inputs], columns=with_no_meteo)
         
         # Preprocess the input data
         preprocessed_data = preprocess_input(input_data)
