@@ -191,7 +191,7 @@ def preprocess_input(data):
     data['סוג זבל'] = data['סוג זבל'].map(fertile)
     data['טיפוס תירס'] = data['טיפוס תירס'].map(corn_type)
     data['קונפידור, קונפידור + טלסטאר בזריעה'] = data['קונפידור, קונפידור + טלסטאר בזריעה'].map(confidor)
-    
+    data.drop(columns = ['אזור'], inplace = True)
     data = data.astype('float64')
     data = pd.get_dummies(data, columns=categorial_feats, prefix=categorial_feats, prefix_sep='_')
     # Realign new data columns with training data columns
@@ -218,7 +218,6 @@ def procces_meteo(data):
     # Add the extra columns to the first DataFrame
     for col in extra_columns:
         data[col] = filtered_df2[col].values[0]
-    data.drop(columns = ['אזור'], inplace = True)
     return data
         
 # Create the Streamlit app
