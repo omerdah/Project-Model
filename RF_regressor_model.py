@@ -177,7 +177,7 @@ confidor = {
 }
 # Function to preprocess the input data
 def preprocess_input(data):
-    data['עונת גידול'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(season_mapping)
+    
     data['שלב הזריעה בעונה'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(month_mapping)
     data['מועד זריעה'] = pd.to_datetime(data['מועד זריעה']).dt.dayofyear
     
@@ -203,7 +203,8 @@ def preprocess_input(data):
     data = data[X]
     return data
 
-def procces_meteo(data):   
+def procces_meteo(data):
+    data['עונת גידול'] = pd.to_datetime(data['מועד זריעה']).dt.month.map(season_mapping)
     # Extract the season and area values from the first DataFrame
     season = data['עונת גידול'].values[0]
     area = data['אזור'].values[0]
@@ -253,9 +254,9 @@ def main():
         
         input_data = pd.DataFrame([inputs], columns=with_no_meteo)
         
-        # Preprocess the input data
-        preprocessed_data = preprocess_input(input_data)
-        preprocessed_data = procces_meteo(preprocessed_data)
+        # Preprocess the input data  
+        preprocessed_data = procces_meteo(input_data)
+        preprocessed_data = preprocess_input(preprocessed_data)
         # Make predictions
         prediction = model.predict(preprocessed_data)
 
