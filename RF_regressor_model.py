@@ -245,7 +245,8 @@ def main():
             else:
                 input_value = st.number_input(feature_name, value=0.0)
         else:
-            input_value = st.number_input(feature_name, value=0.0)
+            if feature_name not in ['טמפ 2 ממוצע יום','טמפ 2 ממוצע לילה','לחות יחסית ממוצע יום']:
+                input_value = st.number_input(feature_name, value=0.0)
 
         inputs.append(input_value)
         
@@ -262,7 +263,7 @@ def main():
 
         # Display the prediction
         st.write('חיזוי:', prediction)
-
+    
 # Run the app
 if __name__ == '__main__':
     main()
