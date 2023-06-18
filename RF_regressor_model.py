@@ -231,7 +231,9 @@ def main():
 
     inputs = []
     for feature_name in all_features:
-        if feature_name in meteo_feats:
+        if feature_name in ['לחות יחסית ממוצע יום', 'טמפ 2 ממוצע יום', 'טמפ 2 ממוצע לילה']:
+            continue
+        elif feature_name in meteo_feats:
             continue
         elif feature_name == 'מועד זריעה':
             min_date = pd.to_datetime('today').date()
@@ -245,8 +247,7 @@ def main():
             else:
                 input_value = st.number_input(feature_name, value=0.0)
         else:
-            if feature_name not in ['טמפ 2 ממוצע יום','טמפ 2 ממוצע לילה','לחות יחסית ממוצע יום']:
-                input_value = st.number_input(feature_name, value=0.0)
+            input_value = st.number_input(feature_name, value=0.0)
 
         inputs.append(input_value)
         
