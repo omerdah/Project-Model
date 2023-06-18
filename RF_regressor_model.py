@@ -17,6 +17,7 @@ model = pickle.load(open('rounded_RF_Regressor_model.pkl', 'rb'))
 stats_per_season_and_area = pd.read_excel('stats_per_season_and_area.xlsx',index_col=None)
 df_mappings = pd.read_excel('feature_mappings.xlsx',index_col=None)
 X = ['מועד זריעה',
+ 'ריסוס ראשון ימים מזריעה',
  "מס' דונם",
  'גובה מפני הים',
  'מנת גשם עונתי',
