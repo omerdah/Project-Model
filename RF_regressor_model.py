@@ -95,6 +95,7 @@ month_mapping = {
     11: 3,
     12: 3
 }
+meteo_feats = ['קרינה ממוצע יום','קרינה ממוצע לילה','עננות ממוצע יום','התאדות פנמן ממוצע יום','התאדות פנמן ממוצע לילה','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','כיוון רוח ממוצע לילה','מהירות רוח ממוצע יום','מהירות רוח ממוצע לילה','טמפ 2 ממוצע יום','טמפ 2 ממוצע לילה']
 all_features = ['טיפוס תירס','סוג זבל','עיבוד מקדים','אופן הדברה','כרב/גידול קודם','סוג הקרקע','ייעוד','גידול תירס/סורגום שכן','השקיה','משך גידול ממוצע','קרינה ממוצע יום','עננות ממוצע יום','התאדות פנמן ממוצע יום','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','מהירות רוח ממוצע יום','טמפ 2 מ ממוצע יום','קרינה ממוצע לילה','התאדות פנמן ממוצע לילה','לחות יחסית ממוצע לילה','כיוון רוח ממוצע לילה','מהירות רוח ממוצע לילה','טמפ 2 מ ממוצע לילה','קונפידור, קונפידור + טלסטאר בזריעה','מנת גשם עונתי','גובה מפני הים',"מס' דונם",'מועד זריעה','אזור']
 categorial_feats = ['קונפידור, קונפידור + טלסטאר בזריעה','השקיה','גידול תירס/סורגום שכן','ייעוד','סוג הקרקע','כרב/גידול קודם','אופן הדברה','עיבוד מקדים','סוג זבל','טיפוס תירס','עונת גידול','שלב הזריעה בעונה']
 # season_mapping = {'סתיו': 0, 'אביב': 1, 'אביב-קיץ': 2}
@@ -202,9 +203,7 @@ def preprocess_input(data):
     data = data[X]
     return data
 
-def procces_meteo(data):
-    feats = ['קרינה ממוצע יום','קרינה ממוצע לילה','עננות ממוצע יום','התאדות פנמן ממוצע יום','התאדות פנמן ממוצע לילה','גשם ממוצע יום','לחות יחסית ממוצע יום','כיוון רוח ממוצע יום','כיוון רוח ממוצע לילה','מהירות רוח ממוצע יום','מהירות רוח ממוצע לילה','טמפ 2 ממוצע יום','טמפ 2 ממוצע לילה']
-    
+def procces_meteo(data):    
     # Extract the season and area values from the first DataFrame
     season = data['עונת גידול'].values[0]
     area = data['אזור'].values[0]
@@ -213,11 +212,11 @@ def procces_meteo(data):
     filtered_df2 = stats_per_season_and_area[(stats_per_season_and_area['עונת גידול'] == season) & (stats_per_season_and_area['אזור'] == area)].copy()
 
     # Get the extra column names from df2
-    extra_columns = df2.columns.difference(['עונת גידול', 'אזור'])
+    extra_columns = stats_per_season_and_area.columns.difference(['עונת גידול', 'אזור'])
 
     # Add the extra columns to the first DataFrame
     for col in extra_columns:
-        df1[col] = filtered_df2[col].values[0]
+        data[col] = filtered_df2[col].values[0]
 
         
 # Create the Streamlit app
@@ -236,6 +235,9 @@ def main():
             min_date = pd.to_datetime('today').date()
             max_date = pd.to_datetime('2030-12-31').date()
             input_value = st.date_input(feature_name, min_value=min_date, max_value=max_date)
+
+        elif feature_name in meteo_feats:
+            continue
         elif feature_name in input_names:
             valid_values = list(df_mappings[feature_name].dropna().unique())
 
